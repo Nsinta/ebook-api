@@ -17,6 +17,9 @@ use App\Http\Controllers\AuthorController;
 |
 */
 
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
 
 //ga ada edit dan create
 Route::get('me', function(){
@@ -34,13 +37,21 @@ Route::get('authors/{id}', [AuthorController::class, 'show']);
 Route::post('register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+//Route::post('books', [BookController::class, 'store']);
+//Route::put('books/{id}', [BookController::class, 'update']);
+//Route::delete('books/{id}', [BookController::class, 'destroy']);
 
+
+//protected routes melewati middleware sanctum
+Route::middleware('auth:sanctum')->group(function(){
     Route::resource('books', BookController::class)->except(
         ['create', 'edit', 'index', 'show']
     );
 
-   
+    Route::post('/logout', [AuthController::class, 'logout']);
+
     Route::resource('authors', AuthorController::class)->except(
         ['create', 'edit', 'index', 'show']
     );
 
+});
